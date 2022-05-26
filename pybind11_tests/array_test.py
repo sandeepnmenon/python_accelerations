@@ -1,5 +1,9 @@
 import random
 import time
+import sys
+
+# Add parent directory path in import
+sys.path.append('../')
 from build.py_vector import get_array_sum
 
 # Initialize an array with random numbers
