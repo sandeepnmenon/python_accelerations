@@ -45,6 +45,7 @@ py::array get_checkerboard_corners(const string image_file_path, int num_columns
     }
     else
     {
+        cout << "Checkerboard not found for image file at " << image_file_path << endl;
         return py::array_t<float>();
     }
 }
