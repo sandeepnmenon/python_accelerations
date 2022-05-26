@@ -6,7 +6,7 @@
 namespace py = pybind11;
 using namespace std;
 
-// Checkerborad detection for all files in a folder
+// Checkerborad detection for given file
 py::array get_checkerboard_corners(const string image_file_path, int num_columns, int num_rows)
 {
     // Read image

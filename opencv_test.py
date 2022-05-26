@@ -3,6 +3,7 @@ import time
 import cv2
 import os
 import numpy as np
+from glob import glob
 from build.py_opencv import get_checkerboard_corners
 
 def py_get_checkerboard_corners(image_file_path, corners_x, corners_y):
@@ -23,19 +24,43 @@ def py_get_checkerboard_corners(image_file_path, corners_x, corners_y):
         print(f'Corners ({corners_x}x{corners_y}) could not be found for image file at {image_file_path}')
         return np.array([]), gray_img
 
+# Compare checkerboard detection using python and C++ with pybind11
 img_path = "/home/menonsandu/Downloads/checkerboad.jpeg"
 corners_x = 9
 corners_y = 7
 
-# Compare time taken by python checkerboard detection with cpp
-start = time.time()
-img_corners, gray_img = py_get_checkerboard_corners(img_path, corners_x, corners_y)
-print(img_corners.shape, img_corners[3])
-end = time.time()
-print("Time taken by python checkerboard detection:", end - start)
-
 start = time.time()
 img_corners = get_checkerboard_corners(img_path, corners_x, corners_y)
-print(img_corners.shape, img_corners[3])
 end = time.time()
+print(img_corners.shape, img_corners[3])
 print("Time taken by cpp checkerboard detection:", end - start)
+
+start = time.time()
+img_corners, gray_img = py_get_checkerboard_corners(img_path, corners_x, corners_y)
+end = time.time()
+print(img_corners.shape, img_corners[3])
+print("Time taken by python checkerboard detection:", end - start)
+
+# Compare checkerboard detection on all files in a directory using python and C++ with pybind11
+dir_path = "/home/menonsandu/stereo-callibration/camodocal/data/images/png_files"
+corners_x = 9
+corners_y = 6
+
+# Python
+files = glob(os.path.join(dir_path , "*.png"))
+start = time.time()
+img_corners_list = []
+for image_file in files:
+    img_corners, gray_img = py_get_checkerboard_corners(image_file, corners_x, corners_y)
+    img_corners_list.append(img_corners)
+end = time.time()
+print("Time taken by python checkerboard detection on all files in a directory:", end - start)
+
+# C++
+start = time.time()
+img_corners_list = []
+for image_file in files:
+    img_corners = get_checkerboard_corners(image_file, corners_x, corners_y)
+    img_corners_list.append(img_corners)
+end = time.time()
+print("Time taken by cpp checkerboard detection on all files in a directory:", end - start)
